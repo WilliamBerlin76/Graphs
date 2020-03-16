@@ -84,40 +84,67 @@ class Graph:
                 for neighbor in self.get_neighbors(v):
                     s.push(neighbor)
 
-    # def dft_recursive(self, starting_vertex):
-    #     """
-    #     Print each vertex in depth-first order
-    #     beginning from starting_vertex.
+    def dft_recursive(self, starting_vertex):
+        """
+        Print each vertex in depth-first order
+        beginning from starting_vertex.
 
-    #     This should be done using recursion.
-    #     """
-    #     pass  # TODO
+        This should be done using recursion.
+        """
+        # Create visited set to store visited vertices
+        visited = set()
+        # Create nested recursive helper function
+        def recurse_helper(starting_vertex, visited):
+            # Check if the node has been visited
+            if starting_vertex not in visited:
+            # If not...
+                print(starting_vertex)
+                # Mark it as visited
+                visited.add(starting_vertex)
+                # Call dft_recursive on each neighbor
+                for neighbor in self.get_neighbors(starting_vertex):
+                    recurse_helper(neighbor, visited)
+        # Call the helper function
+        recurse_helper(starting_vertex, visited)
 
-    # def bfs(self, starting_vertex, destination_vertex):
-    #     """
-    #     Return a list containing the shortest path from
-    #     starting_vertex to destination_vertex in
-    #     breath-first order.
-    #     """
-    #     pass  # TODO
+    def bfs(self, starting_vertex, destination_vertex):
+        """
+        Return a list containing the shortest path from
+        starting_vertex to destination_vertex in
+        breath-first order.
+        """
+        # Create a queue
+        # Enqueue A PATH TO the starting vertex
+        # Create a set to store visited vertices
+        # While the queue is not empty...
+            # Dequeue the first PATH
+            # GRAB THE VERTEX FROM THE END OF THE PATH
+            # Check if it's been visited
+            # If it hasn't been visited...
+                # Mark it as visited
+                # CHECK IF IT'S THE TARGET
+                    # IF SO, RETURN THE PATH
+                # Enqueue A PATH TO all it's neighbors
+                    # MAKE A COPY OF THE PATH
+                    # ENQUEUE THE COPY
 
-    # def dfs(self, starting_vertex, destination_vertex):
-    #     """
-    #     Return a list containing a path from
-    #     starting_vertex to destination_vertex in
-    #     depth-first order.
-    #     """
-    #     pass  # TODO
+    def dfs(self, starting_vertex, destination_vertex):
+        """
+        Return a list containing a path from
+        starting_vertex to destination_vertex in
+        depth-first order.
+        """
+        pass  # TODO
 
-    # def dfs_recursive(self, starting_vertex):
-    #     """
-    #     Return a list containing a path from
-    #     starting_vertex to destination_vertex in
-    #     depth-first order.
+    def dfs_recursive(self, starting_vertex):
+        """
+        Return a list containing a path from
+        starting_vertex to destination_vertex in
+        depth-first order.
 
-    #     This should be done using recursion.
-    #     """
-    #     pass  # TODO
+        This should be done using recursion.
+        """
+        pass  # TODO
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
@@ -171,7 +198,7 @@ if __name__ == '__main__':
         1, 2, 4, 6, 3, 5, 7
     '''
     graph.dft(1)
-    # graph.dft_recursive(1)
+    graph.dft_recursive(1)
 
     # '''
     # Valid BFS path:
