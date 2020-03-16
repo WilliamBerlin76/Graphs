@@ -128,7 +128,7 @@ class Graph:
             # Check if it's been visited
             if last_vert not in visited:
             # If it hasn't been visited...
-                print(last_vert)
+                # print(last_vert)
                 # Mark it as visited
                 visited.add(last_vert)
                 # CHECK IF IT'S THE TARGET
@@ -143,6 +143,7 @@ class Graph:
                     v[-1] = neighbor
                     # ENQUEUE THE COPY
                     if neighbor is destination_vertex:
+                        print(v)
                         return v
                     q.enqueue(v)
 
@@ -151,6 +152,34 @@ class Graph:
         Return a list containing a path from
         starting_vertex to destination_vertex in
         depth-first order.
+        """
+        s = Stack()
+        s.push([starting_vertex])
+        visited = set()
+
+        while s.size() > 0:
+            v = s.pop()
+            last_vert = v[-1]
+            if last_vert not in visited:
+                visited.add(last_vert)
+                if last_vert == destination_vertex:
+                    print(v)
+                    return v
+                v.append(0)
+                for neighbor in self.get_neighbors(last_vert):
+                    v[-1] = neighbor
+                    if neighbor is destination_vertex:
+                        print(v)
+                        return v
+                    s.push(v)
+
+    def dfs_recursive(self, starting_vertex):
+        """
+        Return a list containing a path from
+        starting_vertex to destination_vertex in
+        depth-first order.
+
+        This should be done using recursion.
         """
         visited = set()
 
@@ -171,16 +200,6 @@ class Graph:
                     else:
                         return starting_vertex
         return recurse_helper(starting_vertex, destination_vertex, visited)
-
-    def dfs_recursive(self, starting_vertex):
-        """
-        Return a list containing a path from
-        starting_vertex to destination_vertex in
-        depth-first order.
-
-        This should be done using recursion.
-        """
-        pass  # TODO
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
@@ -248,6 +267,6 @@ if __name__ == '__main__':
     #     [1, 2, 4, 6]
     #     [1, 2, 4, 7, 6]
     # '''
-    # print('START DFS')
-    # print(graph.dfs(1, 6))
+    print('START DFS')
+    print(graph.dfs(1, 6))
     # print(graph.dfs_recursive(1, 6))
