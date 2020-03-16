@@ -94,7 +94,7 @@ class Graph:
         # Create visited set to store visited vertices
         visited = set()
         # Create nested recursive helper function
-        def recurse_helper(starting_vertex, visited):
+        def recurse_helper(starting_vertex):
             # Check if the node has been visited
             if starting_vertex not in visited:
             # If not...
@@ -103,9 +103,9 @@ class Graph:
                 visited.add(starting_vertex)
                 # Call helper function on each neighbor
                 for neighbor in self.get_neighbors(starting_vertex):
-                    recurse_helper(neighbor, visited)
+                    recurse_helper(neighbor)
         # Call the helper function
-        recurse_helper(starting_vertex, visited)
+        recurse_helper(starting_vertex)
 
     def bfs(self, starting_vertex, destination_vertex):
         """
@@ -173,7 +173,7 @@ class Graph:
                         return v
                     s.push(v)
 
-    def dfs_recursive(self, starting_vertex):
+    def dfs_recursive(self, starting_vertex, destination_vertex):
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
@@ -182,24 +182,30 @@ class Graph:
         This should be done using recursion.
         """
         visited = set()
-
-        def recurse_helper(starting_vertex, destination_vertex, visited):
-            if starting_vertex == destination_vertex:
-                print(starting_vertex)
-                return starting_vertex
-            if starting_vertex not in visited:
-                print(starting_vertex)
-                visited.add(starting_vertex)
+        init_path = [starting_vertex]
+        def recurse_helper(path):
+            v = path[-1]
+            if v is destination_vertex:
+                # path.append(vertex)
+                print(path)
+                return path
+            if v not in visited:
+                visited.add(v)
+                path.append(0)
+                paths = []
                 
-                for neighbor in self.get_neighbors(starting_vertex):
-                    if neighbor == destination_vertex:
-                        print(neighbor)
-                        return neighbor
-                    elif len(self.get_neighbors(starting_vertex)) > 0:
-                        return recurse_helper(neighbor, destination_vertex, visited)
-                    else:
-                        return starting_vertex
-        return recurse_helper(starting_vertex, destination_vertex, visited)
+                for neighbor in self.get_neighbors(v):
+                    path[-1] = neighbor
+                    
+                    if neighbor is destination_vertex:
+                        print(path)
+                        return path
+                    paths.append(path)
+                
+                for i in range(len(paths)):
+                    return recurse_helper(paths[i])    
+                    
+        return recurse_helper(init_path)
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
@@ -243,17 +249,17 @@ if __name__ == '__main__':
         1, 2, 4, 3, 7, 6, 5
         1, 2, 4, 3, 7, 5, 6
     '''
-    graph.bft(1)
+    # graph.bft(1)
 
-    '''
-    Valid DFT paths:
-        1, 2, 3, 5, 4, 6, 7
-        1, 2, 3, 5, 4, 7, 6
-        1, 2, 4, 7, 6, 3, 5
-        1, 2, 4, 6, 3, 5, 7
-    '''
-    graph.dft(1)
-    graph.dft_recursive(1)
+    # '''
+    # Valid DFT paths:
+    #     1, 2, 3, 5, 4, 6, 7
+    #     1, 2, 3, 5, 4, 7, 6
+    #     1, 2, 4, 7, 6, 3, 5
+    #     1, 2, 4, 6, 3, 5, 7
+    # '''
+    # graph.dft(1)
+    # graph.dft_recursive(1)
 
     # '''
     # Valid BFS path:
@@ -269,4 +275,5 @@ if __name__ == '__main__':
     # '''
     print('START DFS')
     print(graph.dfs(1, 6))
-    # print(graph.dfs_recursive(1, 6))
+    print('START DFS RECURSIVE')
+    print(graph.dfs_recursive(1, 6))
