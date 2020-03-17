@@ -122,9 +122,9 @@ class Graph:
         # While the queue is not empty...
         while q.size() > 0:
             # Dequeue the first PATH
-            v = q.dequeue()
+            path = q.dequeue()
             # GRAB THE VERTEX FROM THE END OF THE PATH
-            last_vert = v[-1]
+            last_vert = path[-1]
             # Check if it's been visited
             if last_vert not in visited:
             # If it hasn't been visited...
@@ -133,19 +133,22 @@ class Graph:
                 visited.add(last_vert)
                 # CHECK IF IT'S THE TARGET
                 if last_vert == destination_vertex:
-                    print(v)
-                    return v
+                    print(path)
+                    return path
                     # IF SO, RETURN THE PATH
                 # Enqueue A PATH TO all it's neighbors
-                v.append(0)
+                
                 for neighbor in self.get_neighbors(last_vert):
                     # MAKE A COPY OF THE PATH
-                    v[-1] = neighbor
+                    path_copy = path.copy()
                     # ENQUEUE THE COPY
+                    path_copy.append(neighbor)
                     if neighbor is destination_vertex:
-                        print(v)
-                        return v
-                    q.enqueue(v)
+                        print(path_copy)
+                        return path_copy
+                    
+                    q.enqueue(path_copy)
+                
 
     def dfs(self, starting_vertex, destination_vertex):
         """
@@ -158,20 +161,21 @@ class Graph:
         visited = set()
 
         while s.size() > 0:
-            v = s.pop()
-            last_vert = v[-1]
+            path = s.pop()
+            last_vert = path[-1]
             if last_vert not in visited:
                 visited.add(last_vert)
                 if last_vert == destination_vertex:
-                    print(v)
-                    return v
-                v.append(0)
+                    print(path)
+                    return path
+                
                 for neighbor in self.get_neighbors(last_vert):
-                    v[-1] = neighbor
+                    path_copy = path.copy()
+                    path_copy.append(neighbor)
                     if neighbor is destination_vertex:
-                        print(v)
-                        return v
-                    s.push(v)
+                        print(path_copy)
+                        return path_copy
+                    s.push(path_copy)
 
     def dfs_recursive(self, starting_vertex, destination_vertex):
         """
@@ -191,19 +195,19 @@ class Graph:
                 return path
             if v not in visited:
                 visited.add(v)
-                path.append(0)
                 
+                if v == destination_vertex:
+                    return path
                 for neighbor in self.get_neighbors(v):
-                    
+                    path_copy = path.copy()
+                    path_copy.append(neighbor)
                     if neighbor is destination_vertex:
-                        path[-1] = neighbor
-                        print(path)
-                        return path
-                    if neighbor in visited:
-                        break
-                    path[-1] = neighbor
+                        print(path_copy)
+                        return path_copy
+                    new_path = recurse_helper(path_copy)
+                    if new_path is not None:
+                        return new_path
 
-                return recurse_helper(path)
                         
         return recurse_helper(init_path)
 
