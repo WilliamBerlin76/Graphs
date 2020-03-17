@@ -192,19 +192,19 @@ class Graph:
             if v not in visited:
                 visited.add(v)
                 path.append(0)
-                paths = []
                 
                 for neighbor in self.get_neighbors(v):
-                    path[-1] = neighbor
                     
                     if neighbor is destination_vertex:
+                        path[-1] = neighbor
                         print(path)
                         return path
-                    paths.append(path)
-                
-                for i in range(len(paths)):
-                    return recurse_helper(paths[i])    
-                    
+                    if neighbor in visited:
+                        break
+                    path[-1] = neighbor
+
+                return recurse_helper(path)
+                        
         return recurse_helper(init_path)
 
 if __name__ == '__main__':
