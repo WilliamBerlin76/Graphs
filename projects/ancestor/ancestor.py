@@ -13,24 +13,24 @@ class Anc_Graph():
         children = set()
         self.vertices[vertex_id] = [parents, children]
         
-    def add_child(self, v1, v2):
-        if v1 in self.vertices and v2 in self.vertices:
+    def add_edge(self, parent, child):
+        if parent in self.vertices and child in self.vertices:
 
-            self.vertices[v2][0].add(v1)
-            self.vertices[v1][1].add(v2)
-        elif v2 in self.vertices:
-            self.add_vertex(v1)
-            self.vertices[v1][1].add(v2)
-            self.vertices[v2][0].add(v1)
-        elif v1 in self.vertices:
-            self.add_vertex(v2)
-            self.vertices[v1][1].add(v2)
-            self.vertices[v2][0].add(v1)
+            self.vertices[child][0].add(parent)
+            self.vertices[parent][1].add(child)
+        elif child in self.vertices:
+            self.add_vertex(parent)
+            self.vertices[parent][1].add(child)
+            self.vertices[child][0].add(parent)
+        elif parent in self.vertices:
+            self.add_vertex(child)
+            self.vertices[parent][1].add(child)
+            self.vertices[child][0].add(parent)
         else:
-            self.add_vertex(v1)
-            self.add_vertex(v2)
-            self.vertices[v1][1].add(v2)
-            self.vertices[v2][0].add(v1)
+            self.add_vertex(parent)
+            self.add_vertex(child)
+            self.vertices[parent][1].add(child)
+            self.vertices[child][0].add(parent)
     
     def get_parents(self, v):
         return self.vertices[v][0]
@@ -39,7 +39,7 @@ def earliest_ancestor(ancestors, starting_node):
     anc_tree = Anc_Graph()
     # fill graph
     for i in range(len(ancestors)):
-        anc_tree.add_child(ancestors[i][0], ancestors[i][1])
+        anc_tree.add_edge(ancestors[i][0], ancestors[i][1])
 
     # account for no ancestors
     if anc_tree.get_parents(starting_node) == set():
@@ -72,8 +72,10 @@ def earliest_ancestor(ancestors, starting_node):
         for i in range(len(longest_paths)):
             if longest_paths[i][-1] < low_id:
                 low_id = longest_paths[i][-1]
+        print(starting_node, low_id)
         return low_id
     # if no duplicates, return the last index of longest path
+    print(starting_node, longest_paths[0][-1])
     return longest_paths[0][-1]
 
     # print(anc_tree.vertices)
