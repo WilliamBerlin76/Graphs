@@ -34,7 +34,24 @@ class Anc_Graph():
             self.add_vertex(v2)
             self.vertices[v1][1].add(v2)
             self.vertices[v2][0].add(v1)
-        
+    
+    def add_parent(self, v1, v2):
+        if v1 in self.vertices and v2 in self.vertices:
+            self.vertices[v2][1].add(v1)
+            self.vertices[v1][0].add(v2)
+        elif v2 in self.vertices:
+            self.add_vertex(v1)
+            self.vertices[v1][0].add(v2)
+            self.vertices[v2][1].add(v1)
+        elif v1 in self.vertices:
+            self.add_vertex(v2)
+            self.vertices[v1][0].add(v2)
+            self.vertices[v2][1].add(v1)
+        else:
+            self.add_vertex(v1)
+            self.add_vertex(v2)
+            self.vertices[v1][0].add(v2)
+            self.vertices[v2][1].add(v1)
 my_gr = Anc_Graph()
 
 my_gr.add_vertex(75)
@@ -42,6 +59,8 @@ my_gr.add_child(75, 32)
 my_gr.add_child(32, 1)
 my_gr.add_child(32, 2)
 my_gr.add_child(100, 75)
+my_gr.add_parent(32, 88)
+my_gr.add_parent(75, 88)
 print(my_gr.vertices)
 # seems to be single direction, parents to children??
 # store parent node, with a set/list of children nodes?
