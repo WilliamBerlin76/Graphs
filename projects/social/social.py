@@ -56,7 +56,7 @@ class SocialGraph:
             self.add_user(f"User {i+1}")
         # Create friendships
         # To create N random friendships
-        # you could create a list wioth all possible friendship combinations,
+        # you could create a list with all possible friendship combinations,
         # shuffle the list then grab the first N elements from the list.
         possible_friendships = []
         for user_id in self.users:

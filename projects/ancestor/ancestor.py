@@ -63,21 +63,20 @@ def earliest_ancestor(ancestors, starting_node):
                 longest_paths.append(new_path)
             for parent in anc_tree.get_parents(last_node):
                 path_copy = new_path.copy()
-                if parent is not set():
-                    path_copy.append(parent)
-                    s.push(path_copy)
+                path_copy.append(parent)
+                s.push(path_copy)
     # check for duplicate longest paths
     if len(longest_paths) > 1:
         low_id = float('inf')
         for i in range(len(longest_paths)):
             if longest_paths[i][-1] < low_id:
                 low_id = longest_paths[i][-1]
-        print(starting_node, low_id)
+        
         return low_id
     # if no duplicates, return the last index of longest path
-    print(starting_node, longest_paths[0][-1])
+    
     return longest_paths[0][-1]
 
-    # print(anc_tree.vertices)
+   
 
 # print(earliest_ancestor([(1, 3), (2, 3), (3, 6), (5, 6), (5, 7), (4, 5), (4, 8), (8, 9), (11, 8), (10, 1)], 9))
