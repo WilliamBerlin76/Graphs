@@ -1,3 +1,7 @@
+import sys
+sys.path.append('../graph')
+from util import Queue
+
 import random
 
 class User:
@@ -75,14 +79,34 @@ class SocialGraph:
 
         The key is the friend's ID and the value is the path.
         """
+        # initialize visited with initial argument
         visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
+        # visited key will be user_id's and values will be the path to that user
+        # after traversal, visited will be a dictionary with each user, and the shortest path to the user as values
+        # use breadth first search to guarantee the shortest path
+        q = Queue()
+        q.enqueue([user_id])
+
+        while q.size() > 0:
+            path = q.dequeue()
+            last_user = path[-1]
+            
+            if last_user not in visited.keys():
+                visited[last_user] = path # this is the path between users
+            
+            # loop through last users friends
+                
+                for friend in self.friendships[last_user]:
+                    path_copy = path.copy()
+                    path_copy.append(friend)
+                    q.enqueue(path_copy)
+
         return visited
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
     sg.populate_graph(10, 2)
-    print(sg.friendships)
+    print("FRIENDSHIPS\n", sg.friendships)
     connections = sg.get_all_social_paths(1)
-    print(connections)
+    print("CONNECTIONS\n", connections)
