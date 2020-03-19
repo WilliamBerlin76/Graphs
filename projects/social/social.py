@@ -19,12 +19,15 @@ class SocialGraph:
         Creates a bi-directional friendship
         """
         if user_id == friend_id:
-            print("WARNING: You cannot be friends with yourself")
+            # print("WARNING: You cannot be friends with yourself")
+            return False
         elif friend_id in self.friendships[user_id] or user_id in self.friendships[friend_id]:
-            print("WARNING: Friendship already exists")
+            # print("WARNING: Friendship already exists")
+            return False
         else:
             self.friendships[user_id].add(friend_id)
             self.friendships[friend_id].add(user_id)
+            return True
 
     def add_user(self, name):
         """
@@ -70,6 +73,32 @@ class SocialGraph:
         for i in range(num_users * avg_friendships // 2):
             friendship = possible_friendships[i]
             self.add_friendship(friendship[0], friendship[1])
+    
+    def populate_graph_linear(self, num_users, avg_friendships):
+        # Pick a random user
+        self.last_id = 0
+        self.users = {}
+        self.friendships = {}
+        
+        # Add users
+        # Write a for loop that calls create user the right amount of times
+        for i in range(num_users):
+            self.add_user(f"User {i+1}")
+        
+        target_frinedships = num_users * avg_friendships
+        total_friendships = 0
+        collisions = 0
+        # Pick another random user
+        while total_friendships < target_frinedships:
+            user_id = random.randint(1, num_users)
+            friend_id = random.randint(1, num_users)
+        # Try to create the friendship
+            if self.add_friendship(user_id, friend_id):
+                total_friendships += 2
+        # If it works, increment a counter
+        # If not, try again
+            else:
+                collisions += 1
     def get_all_social_paths(self, user_id):
         """
         Takes a user's user_id as an argument
@@ -106,7 +135,7 @@ class SocialGraph:
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populate_graph(10, 2)
+    sg.populate_graph_linear(10, 2)
     print("FRIENDSHIPS\n", sg.friendships)
     connections = sg.get_all_social_paths(1)
     print("CONNECTIONS\n", connections)
