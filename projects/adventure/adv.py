@@ -13,10 +13,10 @@ world = World()
 
 
 # You may uncomment the smaller graphs for development and testing purposes.
-# map_file = "maps/test_line.txt"
-# map_file = "maps/test_cross.txt"
-# map_file = "maps/test_loop.txt"
-# map_file = "maps/test_loop_fork.txt"
+map_file = "maps/test_line.txt"
+map_file = "maps/test_cross.txt"
+map_file = "maps/test_loop.txt"
+map_file = "maps/test_loop_fork.txt"
 map_file = "maps/main_maze.txt"
 
 # Loads the map into a dictionary
@@ -47,28 +47,33 @@ adj_rooms= {}
 for i in range(len(room_graph)):
     adj_rooms[i] = {}
 
+opposites = {'n': 's', 's': 'n', 'e': 'w', 'w': 'e'} # used to record previous room in dft
+
 def dft_maze(starting_room):
     # pick random unexplored direction
-    # travel that direction and log it and loop
-    # when reaching dead end, use bfs to find closest room with '?'
+    # travel that direction, log it, and loop
+    # when reaching dead end, use bfs to find closest room with unexplored neighbors
 
-    # s = Stack()
-    # s.push(starting_room)
-    prev_room = None
+    prev_dir = None
     def recurse_helper(cur_room, prev):
         if adj_rooms[cur_room.id] == {}:
             exits = cur_room.get_exits()
             for i in range(len(exits)):
-                adj_rooms[cur_room.id][exits[i]] = '?'
+                if prev is not None:
+                    if exits[i] == prev[1]:
+                        adj_rooms[cur_room.id][exits[i]] = prev[0]
+                    else:
+                        adj_rooms[cur_room.id][exits[i]] = '?'
+                else:
+                    adj_rooms[cur_room.id][exits[i]] = '?'
         unexplored = []
         # create list of viable directions to move
         for key in adj_rooms[cur_room.id]:
             if adj_rooms[cur_room.id][key] == '?':
                 unexplored.append(key)
-        # check if unexplored paths
+        # check if there are unexplored neighbors
         if len(unexplored) == 0:
-            # run bfs to find shortest path to room with unexplored direction
-            # print('DFT COMPLETE')
+            # run bfs to find shortest path to room with unexplored neighbors
             return bfs_maze(cur_room)
         
         next_dir = random.choice(unexplored) # choose next move
@@ -76,21 +81,20 @@ def dft_maze(starting_room):
         player.travel(next_dir) # travel that way
         next_room = player.current_room # record next room
         adj_rooms[cur_room.id][next_dir] = next_room.id # update adjacency list
-        return recurse_helper(next_room, cur_room.id)
+        return recurse_helper(next_room, [cur_room.id, opposites[next_dir]]) # loop, passing prev room and direction as second arg
     
-    recurse_helper(starting_room, prev_room)
+    recurse_helper(starting_room, prev_dir)
 
 def bfs_maze(cur_room):
     # BFS function, use to find shortest path to room with unknown neighbors
     # this should record the path, add it to traversal path
-    # print('ENTER BFS')
     q = Queue()
     available_directions = player.current_room.get_exits()
     # initialize queue with all possible directions
     for i in range(len(available_directions)):
         q.enqueue([available_directions[i]])
         
-    visited = set() # possibly store room id, and path to it with directions
+    visited = set() # store room id
 
     while q.size() > 0:
         path = q.dequeue()
@@ -107,23 +111,19 @@ def bfs_maze(cur_room):
                     for i in range(len(path)):
                         player.travel(path[i])
                         traversal_path.append(path[i])
-                        # print('END BFT')
-                        
                         return dft_maze(player.current_room)
+
                 path_copy = path.copy()
                 path_copy.append(direciton)
                 q.enqueue(path_copy)
                     
 
-def traverse_maze(player):
-    # function to traverse maze
 
-    dft_maze(player.current_room)
+dft_maze(player.current_room)
     
 
-    print(traversal_path)
+# print(traversal_path)
 # TRAVERSAL TEST
-traverse_maze(player)
 visited_rooms = set()
 player.current_room = world.starting_room
 visited_rooms.add(player.current_room)
