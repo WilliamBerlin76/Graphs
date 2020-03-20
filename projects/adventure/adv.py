@@ -66,17 +66,21 @@ def dft_maze(starting_room):
                         adj_rooms[cur_room.id][exits[i]] = '?'
                 else:
                     adj_rooms[cur_room.id][exits[i]] = '?'
-        unexplored = []
+        elif prev is not None:
+            if adj_rooms[cur_room.id][prev[1]] == '?':
+                adj_rooms[cur_room.id][prev[1]] = prev[0]
+
+        unexplored = set()
         # create list of viable directions to move
         for key in adj_rooms[cur_room.id]:
             if adj_rooms[cur_room.id][key] == '?':
-                unexplored.append(key)
+                unexplored.add(key)
         # check if there are unexplored neighbors
         if len(unexplored) == 0:
             # run bfs to find shortest path to room with unexplored neighbors
             return bfs_maze(cur_room)
-        
-        next_dir = random.choice(unexplored) # choose next move
+       
+        next_dir = random.choice(tuple(unexplored)) # choose next move
         traversal_path.append(next_dir) # add to path
         player.travel(next_dir) # travel that way
         next_room = player.current_room # record next room
@@ -118,11 +122,11 @@ def bfs_maze(cur_room):
                 q.enqueue(path_copy)
                     
 
-
+# Traverse the maze
 dft_maze(player.current_room)
     
 
-# print(traversal_path)
+print(traversal_path)
 # TRAVERSAL TEST
 visited_rooms = set()
 player.current_room = world.starting_room
