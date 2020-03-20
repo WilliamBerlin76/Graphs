@@ -1,10 +1,13 @@
 from room import Room
 from player import Player
 from world import World
-
+import sys
 import random
 from ast import literal_eval
+sys.path.append('../graph')
+from util import Queue
 
+sys.setrecursionlimit(1000000)
 # Load world
 world = World()
 
@@ -12,9 +15,9 @@ world = World()
 # You may uncomment the smaller graphs for development and testing purposes.
 # map_file = "maps/test_line.txt"
 # map_file = "maps/test_cross.txt"
-map_file = "maps/test_loop.txt"
+# map_file = "maps/test_loop.txt"
 # map_file = "maps/test_loop_fork.txt"
-# map_file = "maps/main_maze.txt"
+map_file = "maps/main_maze.txt"
 
 # Loads the map into a dictionary
 room_graph=literal_eval(open(map_file, "r").read())
@@ -65,8 +68,8 @@ def dft_maze(starting_room):
         # check if unexplored paths
         if len(unexplored) == 0:
             # run bfs to find shortest path to room with unexplored direction
-            print('DFT COMPLETE')
-            return
+            # print('DFT COMPLETE')
+            return bfs_maze(cur_room)
         
         next_dir = random.choice(unexplored) # choose next move
         traversal_path.append(next_dir) # add to path
@@ -80,17 +83,45 @@ def dft_maze(starting_room):
 def bfs_maze(cur_room):
     # BFS function, use to find shortest path to room with unknown neighbors
     # this should record the path, add it to traversal path
-    pass
+    # print('ENTER BFS')
+    q = Queue()
+    available_directions = player.current_room.get_exits()
+    # initialize queue with all possible directions
+    for i in range(len(available_directions)):
+        q.enqueue([available_directions[i]])
+        
+    visited = set() # possibly store room id, and path to it with directions
+
+    while q.size() > 0:
+        path = q.dequeue()
+        # print('PATH', path)
+        temp_room = cur_room.id
+        for i in range(len(path)):
+            temp_room = adj_rooms[temp_room][path[i]]
+
+        if temp_room not in visited:
+            visited.add(temp_room) 
+
+            for direciton in adj_rooms[temp_room]:
+                if adj_rooms[temp_room][direciton] == '?':
+                    for i in range(len(path)):
+                        player.travel(path[i])
+                        traversal_path.append(path[i])
+                        # print('END BFT')
+                        
+                        return dft_maze(player.current_room)
+                path_copy = path.copy()
+                path_copy.append(direciton)
+                q.enqueue(path_copy)
+                    
+
 def traverse_maze(player):
     # function to traverse maze
-    # initial_room = player.current_room.get_exits()
-    # for i in range(len(initial_room)):
-    #     adj_rooms[player.current_room.id][initial_room[i]] = '?'
-    # print("ADJ-LIST", adj_room_dict)
-    # print("CUR-ROOM", player.current_room.id)
-    dft_maze(player.current_room)
-    print(adj_rooms)
 
+    dft_maze(player.current_room)
+    
+
+    print(traversal_path)
 # TRAVERSAL TEST
 traverse_maze(player)
 visited_rooms = set()
